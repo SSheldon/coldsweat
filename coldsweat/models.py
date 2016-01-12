@@ -6,6 +6,7 @@ Copyright (c) 2013—2015 Andrea Peltrin
 Portions are copyright (c) 2013 Rui Carmo
 License: MIT (see LICENSE for details)
 """
+import os
 import urlparse 
 import pickle
 from datetime import datetime
@@ -68,18 +69,18 @@ def parse_connection_url(url):
     return parsed.scheme, connect_kwargs
     
 
-engine, kwargs = parse_connection_url(config.database.connection_url)
+engine, kwargs = parse_connection_url(os.environ['DATABASE_URL'])
 if engine == 'sqlite':
     _db = SqliteDatabase_(journal_mode='WAL', **kwargs) 
     migrator = SqliteMigrator(_db)
 elif engine == 'mysql':
     _db = MySQLDatabase(**kwargs)
     migrator = MySQLMigrator(_db)
-elif engine == 'postgresql':
+elif engine == 'postgres':
     _db = PostgresqlDatabase(autorollback=True, **kwargs)
     migrator = PostgresqlMigrator(_db)
 else:
-    raise ValueError('Unknown database engine %s. Should be sqlite, postgresql or mysql' % engine)
+    raise ValueError('Unknown database engine %s. Should be sqlite, postgres or mysql' % engine)
 
 # ------------------------------------------------------
 # Custom fields
