@@ -59,16 +59,10 @@ config = load_config(os.path.abspath('etc/config'))
 # Shared logger instance
 logger = logging.getLogger()
 
-if config.log.filename:
-    logging.basicConfig(
-        filename    = config.log.filename,
-        level       = getattr(logging, config.log.level),
-        format      = '[%(asctime)s] %(process)d %(levelname)s %(message)s',
-    )
-    for module in 'peewee', 'requests':        
-        logging.getLogger(module).setLevel(logging.WARN)
-else:
-    # Silence is golden 
-    logger.addHandler(logging.NullHandler())
-
-
+logging.basicConfig(
+    filename    = config.log.filename,
+    level       = getattr(logging, config.log.level),
+    format      = '[%(asctime)s] %(process)d %(levelname)s %(message)s',
+)
+for module in 'peewee', 'requests':
+    logging.getLogger(module).setLevel(logging.WARN)
