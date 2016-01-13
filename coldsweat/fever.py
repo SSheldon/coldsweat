@@ -63,6 +63,16 @@ class FeverApp(WSGIApp, FeedController, UserController):
         result.last_refreshed_on_time = get_last_refreshed_on_time()
     
         return self.respond_with_json(result)
+
+    @GET(r'^/fever/?$')
+    def refresh(self):
+        logger.debug(u'client from %s requested: %s' % (self.request.remote_addr, self.request.params))
+
+        if 'refresh' in self.request.GET:
+            self.fetch_all_feeds()
+            return Response()
+        else:
+            raise HTTPNotFound()
         
     def respond_with_json(self, data):
         json_data = json.dumps(data, indent=4)
